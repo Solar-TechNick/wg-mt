@@ -16,21 +16,21 @@
                 <button class="help-button" onclick="KeyboardShortcuts.showHelp()" title="Keyboard Shortcuts (?)">?</button>
             </div>
             <nav class="nav">
-                <button class="nav-item active" data-view="server">Server</button>
-                <button class="nav-item" data-view="clients">Clients</button>
-                <button class="nav-item" data-view="site-to-site">Site-to-Site</button>
-                <button class="nav-item" data-view="export">Export</button>
-                <button class="nav-item" data-view="profiles">Profiles</button>
-                <button class="nav-item" data-view="settings">Settings</button>
+                <button class="nav-item active" data-view="server" data-i18n="nav.server">Server</button>
+                <button class="nav-item" data-view="clients" data-i18n="nav.clients">Clients</button>
+                <button class="nav-item" data-view="site-to-site" data-i18n="nav.siteToSite">Site-to-Site</button>
+                <button class="nav-item" data-view="export" data-i18n="nav.export">Export</button>
+                <button class="nav-item" data-view="profiles" data-i18n="nav.profiles">Profiles</button>
+                <button class="nav-item" data-view="settings" data-i18n="nav.settings">Settings</button>
             </nav>
         </aside>
 
         <main class="main-content">
             <div class="view active" id="view-server">
-                <h2>Server Configuration</h2>
+                <h2 data-i18n="server.title">Server Configuration</h2>
                 <div class="config-section">
                     <div class="form-group">
-                        <label for="server-name">Server Name</label>
+                        <label for="server-name" data-i18n="server.name">Server Name</label>
                         <input type="text" id="server-name" placeholder="My VPN Server" value="VPN Server">
                     </div>
 
@@ -133,10 +133,10 @@
 
             <div class="view" id="view-clients">
                 <div class="view-header">
-                    <h2>Client Management</h2>
+                    <h2 data-i18n="clients.title">Client Management</h2>
                     <div class="header-actions">
-                        <button class="btn btn-primary" id="add-client">Add Client</button>
-                        <button class="btn btn-secondary" id="bulk-generate">Bulk Generate</button>
+                        <button class="btn btn-primary" id="add-client" data-i18n="clients.add">Add Client</button>
+                        <button class="btn btn-secondary" id="bulk-generate" data-i18n="clients.bulkGenerate">Bulk Generate</button>
                     </div>
                 </div>
                 <div class="clients-list" id="clients-list">
@@ -147,7 +147,7 @@
             </div>
 
             <div class="view" id="view-site-to-site">
-                <h2>Site-to-Site Configuration</h2>
+                <h2 data-i18n="s2s.title">Site-to-Site Configuration</h2>
                 <div class="config-section">
                     <div class="s2s-header">
                         <p style="color: var(--text-secondary); margin-bottom: 2rem;">
@@ -265,7 +265,7 @@
             </div>
 
             <div class="view" id="view-export">
-                <h2>Export Configurations</h2>
+                <h2 data-i18n="export.title">Export Configurations</h2>
                 <div class="export-options">
                     <div class="form-group">
                         <label for="export-platform">Target Platform</label>
@@ -301,10 +301,10 @@
 
             <div class="view" id="view-profiles">
                 <div class="view-header">
-                    <h2>Profiles</h2>
+                    <h2 data-i18n="profiles.title">Profiles</h2>
                     <div class="header-actions">
-                        <button class="btn btn-primary" id="new-profile">New Profile</button>
-                        <button class="btn btn-secondary" id="import-profile">Import</button>
+                        <button class="btn btn-primary" id="new-profile" data-i18n="profiles.new">New Profile</button>
+                        <button class="btn btn-secondary" id="import-profile" data-i18n="profiles.import">Import</button>
                     </div>
                 </div>
                 <div class="profiles-list" id="profiles-list">
@@ -315,10 +315,10 @@
             </div>
 
             <div class="view" id="view-settings">
-                <h2>Settings</h2>
+                <h2 data-i18n="settings.title">Settings</h2>
                 <div class="settings-section">
                     <div class="form-group">
-                        <label>Theme</label>
+                        <label data-i18n="settings.theme">Theme</label>
                         <select id="theme-select">
                             <option value="system">System Default</option>
                             <option value="light">Light</option>
@@ -326,7 +326,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Language</label>
+                        <label data-i18n="settings.language">Language</label>
                         <select id="language-select">
                             <option value="en">English</option>
                             <option value="de">Deutsch</option>
@@ -334,7 +334,7 @@
                     </div>
                     <div class="form-group">
                         <label>Configuration Validation</label>
-                        <button class="btn btn-primary" id="validate-config">Validate Configuration</button>
+                        <button class="btn btn-primary" id="validate-config" data-i18n="settings.validate">Validate Configuration</button>
                         <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Check for configuration errors before exporting</p>
                     </div>
                 </div>
@@ -347,6 +347,7 @@
     <script src="lib/jszip.min.js"></script>
     <script src="lib/FileSaver.min.js"></script>
 
+    <script src="js/i18n.js"></script>
     <script src="js/crypto.js"></script>
     <script src="js/validation.js"></script>
     <script src="js/ip-manager.js"></script>

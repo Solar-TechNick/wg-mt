@@ -520,6 +520,14 @@ const App = {
             this.autoSave();
         });
 
+        document.getElementById('language-select').addEventListener('change', async (e) => {
+            this.state.settings.language = e.target.value;
+            if (typeof i18n !== 'undefined') {
+                await i18n.switchLanguage(e.target.value);
+            }
+            this.autoSave();
+        });
+
         this.applyTheme(this.state.settings.theme);
     },
 
@@ -553,7 +561,11 @@ const App = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof i18n !== 'undefined') {
+        await i18n.init();
+    }
+
     App.init();
 
     const validateBtn = document.getElementById('validate-config');
