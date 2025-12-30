@@ -14,6 +14,12 @@ const App = {
         },
         clients: [],
         ipPool: null,
+        dyndns: {
+            enabled: false,
+            provider: 'ipv64',
+            domain: '',
+            apiKey: ''
+        },
         settings: {
             defaultKeepalive: 25,
             theme: 'system',
@@ -59,6 +65,11 @@ const App = {
         document.getElementById('enable-psk').checked = this.state.server.enablePSK;
         document.getElementById('enable-nat').checked = this.state.server.enableNAT;
         document.getElementById('keepalive').value = this.state.settings.defaultKeepalive;
+
+        document.getElementById('enable-dyndns').checked = this.state.dyndns.enabled;
+        document.getElementById('dyndns-domain').value = this.state.dyndns.domain || '';
+        document.getElementById('dyndns-apikey').value = this.state.dyndns.apiKey || '';
+        document.getElementById('dyndns-config').style.display = this.state.dyndns.enabled ? 'block' : 'none';
 
         if (this.state.server.privateKey) {
             document.getElementById('server-private-key').value = this.state.server.privateKey;
@@ -116,6 +127,22 @@ const App = {
                 this.autoSave();
             });
         });
+
+        document.getElementById('enable-dyndns').addEventListener('change', (e) => {
+            this.state.dyndns.enabled = e.target.checked;
+            document.getElementById('dyndns-config').style.display = e.target.checked ? 'block' : 'none';
+            this.autoSave();
+        });
+
+        document.getElementById('dyndns-domain').addEventListener('input', (e) => {
+            this.state.dyndns.domain = e.target.value;
+            this.autoSave();
+        });
+
+        document.getElementById('dyndns-apikey').addEventListener('input', (e) => {
+            this.state.dyndns.apiKey = e.target.value;
+            this.autoSave();
+        });
     },
 
     updateServerState() {
@@ -153,6 +180,10 @@ const App = {
     initClientManagement() {
         document.getElementById('add-client').addEventListener('click', () => {
             this.addClient();
+        });
+
+        document.getElementById('bulk-generate').addEventListener('click', () => {
+            this.showBulkGenerateModal();
         });
 
         this.renderClients();
@@ -238,9 +269,97 @@ const App = {
         const client = this.state.clients.find(c => c.id === id);
         if (!client) return;
 
-        const config = ConfigGenerator.generateClientConfig(client, this.state.server);
-        alert(`QR Code for ${client.name}\n\n(QR generation requires qrcode.js library)`);
-        console.log('Client config:', config);
+        QRGenerator.showClientQR(client, this.state.server);
+    },
+
+    showBulkGenerateModal() {
+        if (!this.state.server.privateKey) {
+            alert('Please generate server keys first');
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'bulk-modal';
+        modal.innerHTML = `
+            <div class="bulk-modal-content">
+                <div class="qr-modal-header">
+                    <h3>Bulk Generate Clients</h3>
+                    <button class="qr-modal-close" onclick="this.closest('.bulk-modal').remove()">&times;</button>
+                </div>
+                <div class="qr-modal-body">
+                    <div class="bulk-form-group">
+                        <label for="bulk-count">Number of clients</label>
+                        <input type="number" id="bulk-count" min="1" max="50" value="5">
+                    </div>
+                    <div class="bulk-form-group">
+                        <label for="bulk-pattern">Naming pattern (use {n} for number)</label>
+                        <input type="text" id="bulk-pattern" value="Client-{n}" placeholder="Client-{n}">
+                    </div>
+                    <div class="bulk-form-group">
+                        <label>Preview:</label>
+                        <div class="bulk-preview" id="bulk-preview">
+                            <div class="bulk-preview-item">Client-1</div>
+                            <div class="bulk-preview-item">Client-2</div>
+                            <div class="bulk-preview-item">Client-3</div>
+                            <div class="bulk-preview-item">Client-4</div>
+                            <div class="bulk-preview-item">Client-5</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="qr-modal-footer">
+                    <button class="btn btn-secondary" onclick="this.closest('.bulk-modal').remove()">Cancel</button>
+                    <button class="btn btn-primary" id="bulk-generate-btn">Generate</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const updatePreview = () => {
+            const count = parseInt(document.getElementById('bulk-count').value) || 1;
+            const pattern = document.getElementById('bulk-pattern').value;
+            const preview = document.getElementById('bulk-preview');
+            const existingCount = this.state.clients.length;
+
+            preview.innerHTML = '';
+            for (let i = 1; i <= Math.min(count, 10); i++) {
+                const name = pattern.replace('{n}', existingCount + i);
+                const item = document.createElement('div');
+                item.className = 'bulk-preview-item';
+                item.textContent = name;
+                preview.appendChild(item);
+            }
+
+            if (count > 10) {
+                const more = document.createElement('div');
+                more.className = 'bulk-preview-item';
+                more.textContent = `... and ${count - 10} more`;
+                more.style.fontStyle = 'italic';
+                preview.appendChild(more);
+            }
+        };
+
+        document.getElementById('bulk-count').addEventListener('input', updatePreview);
+        document.getElementById('bulk-pattern').addEventListener('input', updatePreview);
+
+        document.getElementById('bulk-generate-btn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('bulk-count').value) || 1;
+            const pattern = document.getElementById('bulk-pattern').value;
+            const existingCount = this.state.clients.length;
+
+            for (let i = 1; i <= count; i++) {
+                const name = pattern.replace('{n}', existingCount + i);
+                this.addClient(name);
+            }
+
+            modal.remove();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
     },
 
     downloadClientConfig(id) {
@@ -267,23 +386,38 @@ const App = {
         });
     },
 
+    getExporter(platform) {
+        const exporters = {
+            'standard': StandardExporter,
+            'mikrotik': MikroTikExporter,
+            'vyos': VyOSExporter,
+            'fritzbox': FritzBoxExporter,
+            'opnsense': OPNsenseExporter,
+            'edgerouter': EdgeRouterExporter,
+            'glinet': GLiNetExporter,
+            'teltonika': TeltonikaExporter
+        };
+        return exporters[platform] || StandardExporter;
+    },
+
     showExportPreview() {
         const platform = document.getElementById('export-platform').value;
         const type = document.getElementById('export-type').value;
+        const exporter = this.getExporter(platform);
 
         let config = '';
 
-        if (type === 'server' || type === 'complete') {
-            config += ConfigGenerator.generateServerConfig(this.state.server, this.state.clients);
-        }
-
-        if (type === 'all-clients' || type === 'complete') {
-            config += '\n\n# Client Configurations\n';
-            this.state.clients.forEach(client => {
-                config += `\n# ${client.name}\n`;
-                config += ConfigGenerator.generateClientConfig(client, this.state.server);
-                config += '\n';
+        if (type === 'server') {
+            config = exporter.exportServer(this.state.server, this.state.clients);
+        } else if (type === 'all-clients') {
+            config = '# Client Configurations\n\n';
+            this.state.clients.forEach((client, index) => {
+                config += `# Client ${index + 1}: ${client.name}\n`;
+                config += exporter.exportClient(client, this.state.server);
+                config += '\n\n';
             });
+        } else if (type === 'complete') {
+            config = exporter.exportComplete(this.state.server, this.state.clients, this.state.dyndns);
         }
 
         document.getElementById('export-code').textContent = config;
@@ -292,13 +426,32 @@ const App = {
     downloadExport() {
         const platform = document.getElementById('export-platform').value;
         const type = document.getElementById('export-type').value;
+        const exporter = this.getExporter(platform);
 
-        const config = ConfigGenerator.generateServerConfig(this.state.server, this.state.clients);
+        let config = '';
+        let filename = '';
+
+        if (type === 'server') {
+            config = exporter.exportServer(this.state.server, this.state.clients);
+            filename = `wireguard-server.${exporter.fileExtension}`;
+        } else if (type === 'all-clients') {
+            config = '# Client Configurations\n\n';
+            this.state.clients.forEach((client, index) => {
+                config += `# Client ${index + 1}: ${client.name}\n`;
+                config += exporter.exportClient(client, this.state.server);
+                config += '\n\n';
+            });
+            filename = `wireguard-clients.${exporter.fileExtension}`;
+        } else if (type === 'complete') {
+            config = exporter.exportComplete(this.state.server, this.state.clients, this.state.dyndns);
+            filename = `wireguard-complete.${exporter.fileExtension}`;
+        }
+
         const blob = new Blob([config], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `wireguard-server.conf`;
+        a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
     },

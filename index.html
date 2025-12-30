@@ -6,6 +6,7 @@
     <meta name="description" content="WireGuard Router Configuration Tool - Generate VPN configs for multiple platforms">
     <title>WireGuard Config Generator</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
     <div class="app-container">
@@ -100,6 +101,29 @@
                             <div class="form-group">
                                 <label>Public Key</label>
                                 <input type="text" id="server-public-key" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="key-section">
+                        <h3>Dynamic DNS (Optional)</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enable-dyndns">
+                                Enable IPv64.net DynDNS
+                            </label>
+                        </div>
+                        <div id="dyndns-config" style="display: none;">
+                            <div class="form-group">
+                                <label for="dyndns-domain">Domain (*.ipv64.net)</label>
+                                <input type="text" id="dyndns-domain" placeholder="yourdomain.ipv64.net">
+                            </div>
+                            <div class="form-group">
+                                <label for="dyndns-apikey">API Update Key</label>
+                                <input type="password" id="dyndns-apikey" placeholder="Your IPv64.net update key">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem;">
+                                    ⚠️ API key will be stored in browser localStorage
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -208,6 +232,18 @@
     <script src="js/ip-manager.js"></script>
     <script src="js/config-generator.js"></script>
     <script src="js/profile-manager.js"></script>
+    <script src="js/qr-generator.js"></script>
+    <script src="js/dyndns/ipv64.js"></script>
+
+    <script src="js/export/standard.js"></script>
+    <script src="js/export/mikrotik.js"></script>
+    <script src="js/export/vyos.js"></script>
+    <script src="js/export/fritzbox.js"></script>
+    <script src="js/export/opnsense.js"></script>
+    <script src="js/export/edgerouter.js"></script>
+    <script src="js/export/glinet.js"></script>
+    <script src="js/export/teltonika.js"></script>
+
     <script src="js/app.js"></script>
 </body>
 </html>
