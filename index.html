@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WireGuard Router Configuration Tool - Generate VPN configs for multiple platforms">
+    <title>WireGuard Config Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>WireGuard Config</h1>
+            </div>
+            <nav class="nav">
+                <button class="nav-item active" data-view="server">Server</button>
+                <button class="nav-item" data-view="clients">Clients</button>
+                <button class="nav-item" data-view="site-to-site">Site-to-Site</button>
+                <button class="nav-item" data-view="export">Export</button>
+                <button class="nav-item" data-view="profiles">Profiles</button>
+                <button class="nav-item" data-view="settings">Settings</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="view active" id="view-server">
+                <h2>Server Configuration</h2>
+                <div class="config-section">
+                    <div class="form-group">
+                        <label for="server-name">Server Name</label>
+                        <input type="text" id="server-name" placeholder="My VPN Server" value="VPN Server">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="listen-port">Listen Port</label>
+                        <input type="number" id="listen-port" min="1" max="65535" value="51820">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Network Configuration</label>
+                        <div class="network-config">
+                            <input type="text" id="base-network" placeholder="10.50.0.0" value="10.50.0.0">
+                            <select id="connection-count">
+                                <option value="6">1-6 connections (/29)</option>
+                                <option value="14">7-14 connections (/28)</option>
+                                <option value="30" selected>15-30 connections (/27)</option>
+                                <option value="62">31-62 connections (/26)</option>
+                                <option value="126">63-126 connections (/25)</option>
+                                <option value="254">127-254 connections (/24)</option>
+                            </select>
+                        </div>
+                        <div class="subnet-info" id="subnet-info">
+                            Subnet: <span id="calculated-subnet">10.50.0.0/27</span> - <span id="usable-ips">30</span> usable IPs
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="server-dns">DNS Servers</label>
+                        <input type="text" id="server-dns" placeholder="1.1.1.1, 1.0.0.1" value="1.1.1.1, 1.0.0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mtu">MTU</label>
+                        <input type="number" id="mtu" min="1280" max="1500" value="1420">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endpoint">Endpoint (Hostname/IP)</label>
+                        <input type="text" id="endpoint" placeholder="vpn.example.com or IPv64.net domain">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enable-psk" checked>
+                            Enable Pre-Shared Key (PSK)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enable-nat" checked>
+                            Enable NAT/Masquerade
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="keepalive">Default Keepalive (seconds)</label>
+                        <input type="number" id="keepalive" min="0" max="300" value="25">
+                    </div>
+
+                    <div class="key-section">
+                        <h3>Server Keys</h3>
+                        <button class="btn btn-primary" id="generate-server-keys">Generate Keys</button>
+                        <div class="key-display" id="server-keys-display" style="display: none;">
+                            <div class="form-group">
+                                <label>Private Key</label>
+                                <input type="password" id="server-private-key" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Public Key</label>
+                                <input type="text" id="server-public-key" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view" id="view-clients">
+                <div class="view-header">
+                    <h2>Client Management</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="add-client">Add Client</button>
+                        <button class="btn btn-secondary" id="bulk-generate">Bulk Generate</button>
+                    </div>
+                </div>
+                <div class="clients-list" id="clients-list">
+                    <div class="empty-state">
+                        <p>No clients configured. Click "Add Client" to get started.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view" id="view-site-to-site">
+                <h2>Site-to-Site Configuration</h2>
+                <p>Site-to-Site configuration coming soon...</p>
+            </div>
+
+            <div class="view" id="view-export">
+                <h2>Export Configurations</h2>
+                <div class="export-options">
+                    <div class="form-group">
+                        <label for="export-platform">Target Platform</label>
+                        <select id="export-platform">
+                            <option value="standard">WireGuard Standard (.conf)</option>
+                            <option value="mikrotik">MikroTik RouterOS (.rsc)</option>
+                            <option value="vyos">VyOS (commands)</option>
+                            <option value="opnsense">OPNsense (guide)</option>
+                            <option value="fritzbox">Fritz!Box (.conf)</option>
+                            <option value="teltonika">Teltonika RUT (guide)</option>
+                            <option value="edgerouter">EdgeRouter (commands)</option>
+                            <option value="glinet">GL.iNet (.conf)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="export-type">Export Type</label>
+                        <select id="export-type">
+                            <option value="server">Server Configuration Only</option>
+                            <option value="all-clients">All Client Configurations</option>
+                            <option value="complete">Complete Setup (Server + All Clients)</option>
+                        </select>
+                    </div>
+                    <div class="export-actions">
+                        <button class="btn btn-primary" id="export-preview">Preview</button>
+                        <button class="btn btn-secondary" id="export-download">Download</button>
+                        <button class="btn btn-secondary" id="export-zip">Download as ZIP</button>
+                    </div>
+                </div>
+                <div class="export-preview" id="export-preview-area">
+                    <pre><code id="export-code"></code></pre>
+                </div>
+            </div>
+
+            <div class="view" id="view-profiles">
+                <div class="view-header">
+                    <h2>Profiles</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="new-profile">New Profile</button>
+                        <button class="btn btn-secondary" id="import-profile">Import</button>
+                    </div>
+                </div>
+                <div class="profiles-list" id="profiles-list">
+                    <div class="empty-state">
+                        <p>No saved profiles. Your current configuration will be auto-saved.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view" id="view-settings">
+                <h2>Settings</h2>
+                <div class="settings-section">
+                    <div class="form-group">
+                        <label>Theme</label>
+                        <select id="theme-select">
+                            <option value="system">System Default</option>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Language</label>
+                        <select id="language-select">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="lib/tweetnacl.min.js"></script>
+    <script src="lib/qrcode.min.js"></script>
+    <script src="lib/jszip.min.js"></script>
+    <script src="lib/FileSaver.min.js"></script>
+
+    <script src="js/crypto.js"></script>
+    <script src="js/ip-manager.js"></script>
+    <script src="js/config-generator.js"></script>
+    <script src="js/profile-manager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
