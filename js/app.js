@@ -562,4 +562,8 @@ document.addEventListener('DOMContentLoaded', () => {
             App.validateConfig();
         });
     }
+
+    if (typeof KeyboardShortcuts !== 'undefined') {
+        KeyboardShortcuts.init();
+    }
 });

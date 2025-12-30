@@ -1,0 +1,135 @@
+{
+  "app": {
+    "title": "WireGuard Konfigurator"
+  },
+  "nav": {
+    "server": "Server",
+    "clients": "Clients",
+    "siteToSite": "Site-to-Site",
+    "export": "Export",
+    "profiles": "Profile",
+    "settings": "Einstellungen"
+  },
+  "server": {
+    "title": "Server-Konfiguration",
+    "name": "Server-Name",
+    "listenPort": "Listen-Port",
+    "networkConfig": "Netzwerkkonfiguration",
+    "baseNetwork": "Basis-Netzwerk",
+    "connectionCount": "Anzahl Verbindungen",
+    "subnet": "Subnetz",
+    "usableIPs": "nutzbare IPs",
+    "dns": "DNS-Server",
+    "mtu": "MTU",
+    "endpoint": "Endpoint (Hostname/IP)",
+    "enablePSK": "Pre-Shared Key (PSK) aktivieren",
+    "enableNAT": "NAT/Masquerade aktivieren",
+    "keepalive": "Standard-Keepalive (Sekunden)",
+    "generateKeys": "Schlüssel generieren",
+    "privateKey": "Privater Schlüssel",
+    "publicKey": "Öffentlicher Schlüssel"
+  },
+  "dyndns": {
+    "title": "Dynamisches DNS (Optional)",
+    "enable": "IPv64.net DynDNS aktivieren",
+    "domain": "Domain (*.ipv64.net)",
+    "apiKey": "API-Update-Schlüssel",
+    "warning": "⚠️ API-Schlüssel wird im Browser-localStorage gespeichert"
+  },
+  "clients": {
+    "title": "Client-Verwaltung",
+    "add": "Client hinzufügen",
+    "bulkGenerate": "Mehrere generieren",
+    "empty": "Keine Clients konfiguriert. Klicken Sie auf \"Client hinzufügen\".",
+    "ipAddress": "IP-Adresse",
+    "publicKey": "Öffentlicher Schlüssel",
+    "qr": "QR",
+    "download": "Herunterladen",
+    "delete": "Löschen"
+  },
+  "bulk": {
+    "title": "Mehrere Clients generieren",
+    "count": "Anzahl der Clients",
+    "pattern": "Namensmuster (verwenden Sie {n} für Nummer)",
+    "preview": "Vorschau:",
+    "cancel": "Abbrechen",
+    "generate": "Generieren"
+  },
+  "s2s": {
+    "title": "Site-to-Site-Konfiguration",
+    "description": "WireGuard-Tunnel zwischen zwei Standorten konfigurieren (Büros, Netzwerke usw.)",
+    "siteName": "Standortname",
+    "lanNetwork": "Lokales LAN-Netzwerk (CIDR)",
+    "lanHelp": "Lokales Netzwerk hinter diesem Standort",
+    "tunnelIP": "WireGuard-Tunnel-IP",
+    "endpoint": "Öffentlicher Endpoint (IP oder Domain)",
+    "listenPort": "Listen-Port",
+    "generateKeys": "Schlüssel generieren",
+    "generateConfigs": "Konfigurationen generieren",
+    "swapSites": "Standorte tauschen",
+    "generatedTitle": "Generierte Konfigurationen",
+    "download": "Herunterladen"
+  },
+  "export": {
+    "title": "Konfigurationen exportieren",
+    "platform": "Zielplattform",
+    "type": "Export-Typ",
+    "typeServer": "Nur Server-Konfiguration",
+    "typeClients": "Alle Client-Konfigurationen",
+    "typeComplete": "Vollständiges Setup (Server + Alle Clients)",
+    "preview": "Vorschau",
+    "download": "Herunterladen",
+    "downloadZip": "Als ZIP herunterladen"
+  },
+  "profiles": {
+    "title": "Profile",
+    "new": "Neues Profil",
+    "import": "Importieren",
+    "empty": "Keine gespeicherten Profile. Ihre aktuelle Konfiguration wird automatisch gespeichert.",
+    "clients": "Clients",
+    "created": "Erstellt:",
+    "export": "Exportieren",
+    "duplicate": "Duplizieren",
+    "delete": "Löschen",
+    "confirmDelete": "Möchten Sie dieses Profil wirklich löschen?",
+    "importSuccess": "Profil erfolgreich importiert",
+    "importFailed": "Fehler beim Importieren des Profils. Ungültiges Format.",
+    "duplicated": "Profil dupliziert"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": "Design",
+    "themeSystem": "Systemstandard",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "language": "Sprache",
+    "validation": "Konfigurations-Validierung",
+    "validate": "Konfiguration validieren",
+    "validationHelp": "Auf Konfigurationsfehler prüfen vor dem Export"
+  },
+  "validation": {
+    "valid": "✓ Konfiguration ist gültig!",
+    "errors": "Konfigurations-Validierungsfehler:",
+    "serverNameRequired": "Server-Name ist erforderlich",
+    "invalidPort": "Ungültiger Listen-Port (muss 1-65535 sein)",
+    "serverKeyRequired": "Privater Server-Schlüssel ist erforderlich",
+    "invalidKeyFormat": "Ungültiges Schlüsselformat",
+    "invalidAddress": "Ungültige Server-Adresse",
+    "addressRequired": "Mindestens eine Server-Adresse ist erforderlich",
+    "invalidMTU": "MTU muss zwischen 1280 und 1500 liegen",
+    "invalidDNS": "Ungültiger DNS-Server",
+    "clientNameRequired": "Client-Name ist erforderlich",
+    "duplicateIP": "Doppelte IP-Adressen gefunden",
+    "duplicateKeys": "Doppelte öffentliche Schlüssel erkannt",
+    "dyndnsDomainRequired": "DynDNS-Domain ist erforderlich, wenn aktiviert",
+    "dyndnsInvalidDomain": "DynDNS-Domain muss mit .ipv64.net enden",
+    "dyndnsKeyRequired": "DynDNS-API-Schlüssel ist erforderlich, wenn aktiviert"
+  },
+  "messages": {
+    "generateServerKeysFirst": "Bitte generieren Sie zuerst die Server-Schlüssel",
+    "ipPoolExhausted": "IP-Pool erschöpft. Keine verfügbaren IPs.",
+    "enterProfileName": "Profilnamen eingeben:",
+    "confirmDeleteProfile": "Möchten Sie dieses Profil wirklich löschen?",
+    "libraryNotLoaded": "Bibliothek nicht geladen. Bitte zum lib/-Ordner hinzufügen."
+  }
+}

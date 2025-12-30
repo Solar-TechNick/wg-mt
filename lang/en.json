@@ -1,0 +1,135 @@
+{
+  "app": {
+    "title": "WireGuard Config Generator"
+  },
+  "nav": {
+    "server": "Server",
+    "clients": "Clients",
+    "siteToSite": "Site-to-Site",
+    "export": "Export",
+    "profiles": "Profiles",
+    "settings": "Settings"
+  },
+  "server": {
+    "title": "Server Configuration",
+    "name": "Server Name",
+    "listenPort": "Listen Port",
+    "networkConfig": "Network Configuration",
+    "baseNetwork": "Base Network",
+    "connectionCount": "Connection Count",
+    "subnet": "Subnet",
+    "usableIPs": "usable IPs",
+    "dns": "DNS Servers",
+    "mtu": "MTU",
+    "endpoint": "Endpoint (Hostname/IP)",
+    "enablePSK": "Enable Pre-Shared Key (PSK)",
+    "enableNAT": "Enable NAT/Masquerade",
+    "keepalive": "Default Keepalive (seconds)",
+    "generateKeys": "Generate Keys",
+    "privateKey": "Private Key",
+    "publicKey": "Public Key"
+  },
+  "dyndns": {
+    "title": "Dynamic DNS (Optional)",
+    "enable": "Enable IPv64.net DynDNS",
+    "domain": "Domain (*.ipv64.net)",
+    "apiKey": "API Update Key",
+    "warning": "⚠️ API key will be stored in browser localStorage"
+  },
+  "clients": {
+    "title": "Client Management",
+    "add": "Add Client",
+    "bulkGenerate": "Bulk Generate",
+    "empty": "No clients configured. Click \"Add Client\" to get started.",
+    "ipAddress": "IP Address",
+    "publicKey": "Public Key",
+    "qr": "QR",
+    "download": "Download",
+    "delete": "Delete"
+  },
+  "bulk": {
+    "title": "Bulk Generate Clients",
+    "count": "Number of clients",
+    "pattern": "Naming pattern (use {n} for number)",
+    "preview": "Preview:",
+    "cancel": "Cancel",
+    "generate": "Generate"
+  },
+  "s2s": {
+    "title": "Site-to-Site Configuration",
+    "description": "Configure WireGuard tunnel between two sites (offices, networks, etc.)",
+    "siteName": "Site Name",
+    "lanNetwork": "Local LAN Network (CIDR)",
+    "lanHelp": "Local network behind this site",
+    "tunnelIP": "WireGuard Tunnel IP",
+    "endpoint": "Public Endpoint (IP or Domain)",
+    "listenPort": "Listen Port",
+    "generateKeys": "Generate Keys",
+    "generateConfigs": "Generate Configurations",
+    "swapSites": "Swap Sites",
+    "generatedTitle": "Generated Configurations",
+    "download": "Download"
+  },
+  "export": {
+    "title": "Export Configurations",
+    "platform": "Target Platform",
+    "type": "Export Type",
+    "typeServer": "Server Configuration Only",
+    "typeClients": "All Client Configurations",
+    "typeComplete": "Complete Setup (Server + All Clients)",
+    "preview": "Preview",
+    "download": "Download",
+    "downloadZip": "Download as ZIP"
+  },
+  "profiles": {
+    "title": "Profiles",
+    "new": "New Profile",
+    "import": "Import",
+    "empty": "No saved profiles. Your current configuration will be auto-saved.",
+    "clients": "clients",
+    "created": "Created:",
+    "export": "Export",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this profile?",
+    "importSuccess": "Profile imported successfully",
+    "importFailed": "Failed to import profile. Invalid format.",
+    "duplicated": "Profile duplicated"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "themeSystem": "System Default",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language",
+    "validation": "Configuration Validation",
+    "validate": "Validate Configuration",
+    "validationHelp": "Check for configuration errors before exporting"
+  },
+  "validation": {
+    "valid": "✓ Configuration is valid!",
+    "errors": "Configuration Validation Errors:",
+    "serverNameRequired": "Server name is required",
+    "invalidPort": "Invalid listen port (must be 1-65535)",
+    "serverKeyRequired": "Server private key is required",
+    "invalidKeyFormat": "Invalid key format",
+    "invalidAddress": "Invalid server address",
+    "addressRequired": "At least one server address is required",
+    "invalidMTU": "MTU must be between 1280 and 1500",
+    "invalidDNS": "Invalid DNS server",
+    "clientNameRequired": "Client name is required",
+    "duplicateIP": "Duplicate IP addresses found",
+    "duplicateKeys": "Duplicate public keys detected",
+    "dyndnsDomainRequired": "DynDNS domain is required when enabled",
+    "dyndnsInvalidDomain": "DynDNS domain must end with .ipv64.net",
+    "dyndnsKeyRequired": "DynDNS API key is required when enabled"
+  },
+  "messages": {
+    "generateServerKeysFirst": "Please generate server keys first",
+    "ipPoolExhausted": "IP pool exhausted. No available IPs.",
+    "enterProfileName": "Enter profile name:",
+    "confirmDeleteProfile": "Are you sure you want to delete this profile?",
+    "libraryNotLoaded": "library not loaded. Please add to lib/ folder."
+  }
+}
