@@ -524,6 +524,8 @@ const App = {
             this.state.settings.language = e.target.value;
             if (typeof i18n !== 'undefined') {
                 await i18n.switchLanguage(e.target.value);
+            } else if (typeof i18nSimple !== 'undefined') {
+                i18nSimple.switch(e.target.value);
             }
             this.autoSave();
         });
@@ -564,6 +566,8 @@ const App = {
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof i18n !== 'undefined') {
         await i18n.init();
+    } else if (typeof i18nSimple !== 'undefined') {
+        i18nSimple.init();
     }
 
     App.init();

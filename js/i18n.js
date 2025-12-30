@@ -1,11 +1,14 @@
 const i18n = {
     currentLang: 'en',
     translations: {},
+    enabled: false,
 
     async init() {
         const savedLang = localStorage.getItem('wg-language') || 'en';
         await this.loadLanguage(savedLang);
-        this.applyTranslations();
+        if (this.enabled) {
+            this.applyTranslations();
+        }
     },
 
     async loadLanguage(lang) {
@@ -14,9 +17,11 @@ const i18n = {
             if (!response.ok) throw new Error('Language file not found');
             this.translations = await response.json();
             this.currentLang = lang;
+            this.enabled = true;
             localStorage.setItem('wg-language', lang);
         } catch (error) {
-            console.error('Failed to load language:', error);
+            console.error('Failed to load language file:', error);
+            this.enabled = false;
             if (lang !== 'en') {
                 await this.loadLanguage('en');
             }
@@ -25,7 +30,9 @@ const i18n = {
 
     async switchLanguage(lang) {
         await this.loadLanguage(lang);
-        this.applyTranslations();
+        if (this.enabled) {
+            this.applyTranslations();
+        }
 
         if (typeof App !== 'undefined') {
             App.state.settings.language = lang;
@@ -49,6 +56,8 @@ const i18n = {
     },
 
     applyTranslations() {
+        if (!this.enabled) return;
+
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             const translation = this.t(key);
@@ -58,6 +67,9 @@ const i18n = {
                     element.placeholder = translation;
                 }
             } else {
+                if (!element.hasAttribute('data-i18n-original')) {
+                    element.setAttribute('data-i18n-original', element.textContent);
+                }
                 element.textContent = translation;
             }
         });
