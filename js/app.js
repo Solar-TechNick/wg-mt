@@ -35,6 +35,14 @@ const App = {
         this.initExport();
         this.initSettings();
         this.updateSubnetInfo();
+
+        if (typeof SiteToSite !== 'undefined') {
+            SiteToSite.init();
+        }
+
+        if (typeof ProfileUI !== 'undefined') {
+            ProfileUI.init();
+        }
     },
 
     loadProfile() {
@@ -384,6 +392,10 @@ const App = {
         document.getElementById('export-download').addEventListener('click', () => {
             this.downloadExport();
         });
+
+        document.getElementById('export-zip').addEventListener('click', () => {
+            this.downloadZip();
+        });
     },
 
     getExporter(platform) {
@@ -456,6 +468,48 @@ const App = {
         URL.revokeObjectURL(url);
     },
 
+    downloadZip() {
+        if (typeof JSZip === 'undefined') {
+            alert('JSZip library not loaded. Please add jszip.min.js to lib/ folder.');
+            return;
+        }
+
+        const platform = document.getElementById('export-platform').value;
+        const exporter = this.getExporter(platform);
+        const zip = new JSZip();
+
+        const serverConfig = exporter.exportServer(this.state.server, this.state.clients);
+        zip.file(`server.${exporter.fileExtension}`, serverConfig);
+
+        this.state.clients.forEach((client, index) => {
+            const clientConfig = exporter.exportClient(client, this.state.server);
+            const filename = `${client.name.replace(/[^a-z0-9]/gi, '_')}.${exporter.fileExtension}`;
+            zip.file(`clients/${filename}`, clientConfig);
+        });
+
+        if (this.state.dyndns && this.state.dyndns.enabled && this.state.dyndns.domain) {
+            const dyndnsInfo = `DynDNS Configuration for ${platform}\n\n`;
+            if (exporter.exportDynDNS) {
+                zip.file('dyndns.txt', dyndnsInfo + exporter.exportDynDNS(this.state.dyndns));
+            }
+        }
+
+        zip.file('README.txt', `WireGuard Configuration Export\n\nPlatform: ${exporter.name}\nGenerated: ${new Date().toISOString()}\nServer: ${this.state.server.name}\nClients: ${this.state.clients.length}\n`);
+
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+            if (typeof saveAs !== 'undefined') {
+                saveAs(content, `wireguard-${platform}-${Date.now()}.zip`);
+            } else {
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `wireguard-${platform}-${Date.now()}.zip`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+    },
+
     initSettings() {
         document.getElementById('theme-select').value = this.state.settings.theme;
         document.getElementById('language-select').value = this.state.settings.language;
@@ -491,9 +545,21 @@ const App = {
             ipPool: this.state.ipPool,
             settings: this.state.settings
         });
+    },
+
+    validateConfig() {
+        const errors = Validator.validateComplete(this.state);
+        return Validator.showValidationResults(errors);
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
+
+    const validateBtn = document.getElementById('validate-config');
+    if (validateBtn) {
+        validateBtn.addEventListener('click', () => {
+            App.validateConfig();
+        });
+    }
 });

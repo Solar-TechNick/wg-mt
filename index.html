@@ -147,7 +147,120 @@
 
             <div class="view" id="view-site-to-site">
                 <h2>Site-to-Site Configuration</h2>
-                <p>Site-to-Site configuration coming soon...</p>
+                <div class="config-section">
+                    <div class="s2s-header">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Configure WireGuard tunnel between two sites (offices, networks, etc.)
+                        </p>
+                    </div>
+
+                    <div class="s2s-sites">
+                        <div class="s2s-site">
+                            <h3>Site A</h3>
+                            <div class="form-group">
+                                <label for="s2s-site-a-name">Site Name</label>
+                                <input type="text" id="s2s-site-a-name" placeholder="Main Office" value="Site A">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-a-lan">Local LAN Network (CIDR)</label>
+                                <input type="text" id="s2s-site-a-lan" placeholder="192.168.1.0/24" value="192.168.1.0/24">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 0.25rem;">
+                                    Local network behind this site
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-a-tunnel-ip">WireGuard Tunnel IP</label>
+                                <input type="text" id="s2s-site-a-tunnel-ip" placeholder="10.99.0.1" value="10.99.0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-a-endpoint">Public Endpoint (IP or Domain)</label>
+                                <input type="text" id="s2s-site-a-endpoint" placeholder="site-a.example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-a-port">Listen Port</label>
+                                <input type="number" id="s2s-site-a-port" value="51820" min="1" max="65535">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" id="s2s-generate-keys-a">Generate Keys</button>
+                            </div>
+                            <div class="s2s-keys" id="s2s-keys-a" style="display: none;">
+                                <div class="form-group">
+                                    <label>Private Key</label>
+                                    <input type="password" id="s2s-site-a-private" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Public Key</label>
+                                    <input type="text" id="s2s-site-a-public" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="s2s-divider">
+                            <div class="s2s-arrow">⟷</div>
+                        </div>
+
+                        <div class="s2s-site">
+                            <h3>Site B</h3>
+                            <div class="form-group">
+                                <label for="s2s-site-b-name">Site Name</label>
+                                <input type="text" id="s2s-site-b-name" placeholder="Branch Office" value="Site B">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-b-lan">Local LAN Network (CIDR)</label>
+                                <input type="text" id="s2s-site-b-lan" placeholder="192.168.2.0/24" value="192.168.2.0/24">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 0.25rem;">
+                                    Local network behind this site
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-b-tunnel-ip">WireGuard Tunnel IP</label>
+                                <input type="text" id="s2s-site-b-tunnel-ip" placeholder="10.99.0.2" value="10.99.0.2">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-b-endpoint">Public Endpoint (IP or Domain)</label>
+                                <input type="text" id="s2s-site-b-endpoint" placeholder="site-b.example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="s2s-site-b-port">Listen Port</label>
+                                <input type="number" id="s2s-site-b-port" value="51820" min="1" max="65535">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" id="s2s-generate-keys-b">Generate Keys</button>
+                            </div>
+                            <div class="s2s-keys" id="s2s-keys-b" style="display: none;">
+                                <div class="form-group">
+                                    <label>Private Key</label>
+                                    <input type="password" id="s2s-site-b-private" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Public Key</label>
+                                    <input type="text" id="s2s-site-b-public" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="s2s-actions">
+                        <button class="btn btn-primary" id="s2s-generate-configs">Generate Configurations</button>
+                        <button class="btn btn-secondary" id="s2s-swap-sites">Swap Sites</button>
+                    </div>
+
+                    <div class="s2s-output" id="s2s-output" style="display: none;">
+                        <h3>Generated Configurations</h3>
+                        <div class="s2s-config-output">
+                            <div class="s2s-config-item">
+                                <h4 id="s2s-config-a-title">Site A Configuration</h4>
+                                <pre><code id="s2s-config-a"></code></pre>
+                                <button class="btn btn-secondary btn-sm" id="s2s-download-a">Download</button>
+                            </div>
+                            <div class="s2s-config-item">
+                                <h4 id="s2s-config-b-title">Site B Configuration</h4>
+                                <pre><code id="s2s-config-b"></code></pre>
+                                <button class="btn btn-secondary btn-sm" id="s2s-download-b">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="view" id="view-export">
@@ -218,6 +331,11 @@
                             <option value="de">Deutsch</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Configuration Validation</label>
+                        <button class="btn btn-primary" id="validate-config">Validate Configuration</button>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Check for configuration errors before exporting</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -229,10 +347,13 @@
     <script src="lib/FileSaver.min.js"></script>
 
     <script src="js/crypto.js"></script>
+    <script src="js/validation.js"></script>
     <script src="js/ip-manager.js"></script>
     <script src="js/config-generator.js"></script>
     <script src="js/profile-manager.js"></script>
+    <script src="js/profile-ui.js"></script>
     <script src="js/qr-generator.js"></script>
+    <script src="js/site-to-site.js"></script>
     <script src="js/dyndns/ipv64.js"></script>
 
     <script src="js/export/standard.js"></script>
